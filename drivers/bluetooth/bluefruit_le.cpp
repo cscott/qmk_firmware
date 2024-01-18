@@ -259,8 +259,8 @@ static void send_buf_send_one(uint16_t timeout = SdepTimeout) {
     struct queue_item item;
 
     // Don't send anything more until we get an ACK
-    if (!resp_buf.empty()) {
-        return;
+    while (!resp_buf.empty()) {
+        resp_buf_read_one(true);
     }
 
     if (!send_buf.peek(item)) {
@@ -601,6 +601,12 @@ static bool process_queue_item(struct queue_item *item, uint16_t timeout) {
             }
             if (item->mousemove.buttons & MOUSE_BTN3) {
                 strcat(cmdbuf, "M");
+            }
+            if (item->mousemove.buttons & MOUSE_BTN4) {
+                strcat(cmdbuf, "B");
+            }
+            if (item->mousemove.buttons & MOUSE_BTN5) {
+                strcat(cmdbuf, "F");
             }
             if (item->mousemove.buttons == 0) {
                 strcat(cmdbuf, "0");

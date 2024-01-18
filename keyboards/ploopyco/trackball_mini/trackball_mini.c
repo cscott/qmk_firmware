@@ -161,12 +161,14 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
     }
 
     if (keycode == DRAG_SCROLL) {
-#ifndef PLOOPY_DRAGSCROLL_MOMENTARY
+#ifdef PLOOPY_DRAGSCROLL_MOMENTARY
+        is_drag_scroll = record->event.pressed;
+#else
         if (record->event.pressed)
-#endif
         {
             is_drag_scroll ^= 1;
         }
+#endif
         pointing_device_set_cpi(is_drag_scroll ? PLOOPY_DRAGSCROLL_DPI : dpi_array[keyboard_config.dpi_config]);
     }
 
@@ -194,6 +196,24 @@ void keyboard_pre_init_kb(void) {
         setPinOutput(unused_pins[i]);
         writePinLow(unused_pins[i]);
     }
+#endif
+
+#ifdef HACKERBOARD
+    setPinOutput(DEBUG_LED_PIN);
+    writePinHigh(DEBUG_LED_PIN);
+    setPinOutput(ADNS5050_RST_PIN);
+    writePinLow(ADNS5050_RST_PIN);
+    setPinOutput(SCROLLWHEEL_LED_PIN);
+    writePinHigh(SCROLLWHEEL_LED_PIN);
+    setPinOutput(ADNS5050_CS_PIN);
+    writePinHigh(ADNS5050_CS_PIN);
+    setPinOutput(ADNS5050_OE_PIN);
+    writePinHigh(ADNS5050_OE_PIN);
+    wait_ms(50); // give power time to stabilize
+    writePinHigh(ADNS5050_RST_PIN);
+    wait_ms(50); // give chip time to reset
+
+    writePinLow(DEBUG_LED_PIN);
 #endif
 
     keyboard_pre_init_user();

@@ -29,21 +29,11 @@ void keyboard_post_init_user(void) {
 }
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-  static uint8_t bl_on = 0;
 
   process_record_user(keycode, record);
 
 
   switch (keycode) {
-        // Implement step brightness for backlight
-        case BL_STEP:
-            if (record->event.pressed) {
-              // XX step through brightness levels
-              bl_on = !bl_on;
-              writePin(KBD_BL_PWM, bl_on);
-            }
-            return true;
-
         case KC_SCRN:
             // Simulate press WIN+P
             // Works (at least) on Windows and GNOME

@@ -43,7 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     /* Function Layer */
     [_FN] = LAYOUT(
-       FN_LOCK, KC_MUTE, KC_VOLD, KC_VOLU, MICROPHONE_MUTE, KC_BRIGHTNESS_DOWN, KC_BRIGHTNESS_UP, KC_SCRN, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, _______, _______, _______, _______,
+       FN_LOCK, KC_MUTE, KC_VOLD, KC_VOLU, MICROPHONE_MUTE, KC_BRIGHTNESS_DOWN, KC_BRIGHTNESS_UP, KC_SCRN, KC_F8, KC_F9, KC_F10, KC_F11, QK_BOOT, _______, _______, _______, _______,
        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -62,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        _______, _______, _______
     ),
     [_FM] = LAYOUT(
-       FN_LOCK, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, _______, _______, _______, _______,
+       FN_LOCK, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, QK_BOOT, _______, _______, _______, _______,
        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -91,4 +91,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
     }
     return true;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+  writePin(LED_FNLOCK, layer_state_cmp(state|default_layer_state, _FN_LOCK) ? 0 : 1);
+  return state;
 }

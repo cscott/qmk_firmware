@@ -78,13 +78,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case FN_LOCK:
             if (record->event.pressed) {
-                if (layer_state_is(_FN)) {
+                if (layer_state_cmp(default_layer_state, _BASE)) {
                     set_single_persistent_default_layer(_FN_LOCK);
-                }
-                if (layer_state_is(_FM)) {
+                } else {
                     set_single_persistent_default_layer(_BASE);
                 }
             }
+            layer_state_set_user(layer_state);
             return false;
             break;
         default:
@@ -94,6 +94,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-  writePin(LED_FNLOCK, layer_state_cmp(state|default_layer_state, _FN_LOCK) ? 0 : 1);
+  writePin(LED_FNLOCK,
+           layer_state_cmp(default_layer_state, _FN_LOCK) ? 1 : 0);
   return state;
 }

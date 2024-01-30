@@ -41,6 +41,11 @@ void mcp23018_init(uint8_t slave_addr);
 bool mcp23018_set_config(uint8_t slave_addr, mcp23018_port_t port, uint8_t conf);
 
 /**
+ * Write IO direction to a given port
+ */
+bool mcp23018_set_dir(uint8_t slave_addr, mcp23018_port_t port, uint8_t conf);
+
+/**
  * Write high/low to a given port
  */
 bool mcp23018_set_output(uint8_t slave_addr, mcp23018_port_t port, uint8_t conf);

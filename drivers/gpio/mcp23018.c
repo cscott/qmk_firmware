@@ -22,7 +22,7 @@ void mcp23018_init(uint8_t addr) {
     static uint8_t s_init = 0;
     if (!s_init) {
         i2c_init();
-        wait_ms(1000);
+        wait_ms(100);
 
         s_init = 1;
     }
@@ -42,6 +42,19 @@ bool mcp23018_set_config(uint8_t slave_addr, mcp23018_port_t port, uint8_t conf)
     ret = i2c_writeReg(addr, cmdPullup, &conf, sizeof(conf), TIMEOUT);
     if (ret != I2C_STATUS_SUCCESS) {
         dprintf("mcp23018_set_config::pullupFAILED::%u\n", ret);
+        return false;
+    }
+
+    return true;
+}
+
+bool mcp23018_set_dir(uint8_t slave_addr, mcp23018_port_t port, uint8_t conf) {
+    uint8_t addr = SLAVE_TO_ADDR(slave_addr);
+    uint8_t cmd  = port ? CMD_IODIRB : CMD_IODIRA;
+
+    i2c_status_t ret = i2c_writeReg(addr, cmd, &conf, sizeof(conf), TIMEOUT);
+    if (ret != I2C_STATUS_SUCCESS) {
+        dprintf("mcp23018_set_output::FAILED::%u\n", ret);
         return false;
     }
 

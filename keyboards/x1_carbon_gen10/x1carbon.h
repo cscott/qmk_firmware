@@ -20,3 +20,9 @@ enum x1carbon_keycodes {
 
 #define IOEXP_RESET GP2 // XXX should be GP24
 #define IOEXP_INT GP3
+
+#define TP4_FW_WR_EN GP5
+#define TP4CLK GP7
+#define TP4DATA GP6
+#define TP4ACT GP12
+#define TP4RESET GP13

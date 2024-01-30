@@ -98,7 +98,7 @@ void ps2_mouse_task(void) {
         mouse_report.v       = -(ps2_host_recv_response() & PS2_MOUSE_SCROLL_MASK);
 #    endif
     } else {
-        if (debug_mouse) print("ps2_mouse: fail to get mouse packet\n");
+      //if (debug_mouse) print("ps2_mouse: fail to get mouse packet\n");
     }
 #endif
 

@@ -18,6 +18,18 @@ void keyboard_pre_init_user(void) {
   setPinInputHigh(KBD_BL_DET);
   setPinOutputPushPull(KBD_BL_PWM);
   writePinLow(KBD_BL_PWM);
+
+  // initialize the PS2 interface
+  setPinInputHigh(TP4CLK);
+  setPinInputHigh(TP4DATA);
+  setPinInputHigh(TP4ACT);
+  setPinOutputPushPull(TP4_FW_WR_EN);
+  writePinHigh(TP4_FW_WR_EN);
+  setPinOutputPushPull(TP4RESET);
+  writePinHigh(TP4RESET); // This reset line is active high (!)
+  wait_ms(100);
+  writePinLow(TP4RESET);
+  wait_ms(100);
 }
 
 
@@ -25,7 +37,7 @@ void keyboard_post_init_user(void) {
   debug_enable = true;
   //debug_matrix = true;
   debug_keyboard = true;
-  //debug_mouse = true;
+  debug_mouse = true;
 }
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {

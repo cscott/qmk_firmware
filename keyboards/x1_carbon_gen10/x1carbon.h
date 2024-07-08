@@ -11,15 +11,19 @@ enum x1carbon_keycodes {
 
 #define SLEEP_GPIO GP4
 #define KBD_BL_PWM GP11
-#define KBD_BL_DET GP24 // XXX should be GP25
+#define KBD_BL_DET GP25
 #define LED_CAPSLOCK GP8
 #define LED_MICMUTE GP9
 #define LED_FNLOCK GP10
 #define LED_MUTE GP15
 #define HOTKEY_GPIO GP14
 
-#define IOEXP_RESET GP2 // XXX should be GP24
-#define IOEXP_INT GP3
+#define IOEXP_RESET GP24
+#define IOEXP_MISO GP0
+#define IOEXP_CS GP1
+#define IOEXP_SCK GP2
+#define IOEXP_MOSI GP3
+#undef IOEXP_INT /* n/c */
 
 #define TP4_FW_WR_EN GP5
 #define TP4CLK GP7

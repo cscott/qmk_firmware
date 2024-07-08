@@ -3,7 +3,12 @@
 #include "mcp23018.h"
 #include "debug.h"
 
-#define I2C_ADDR 0x20
+#ifdef MCP23S18
+# define MCP_ADDR IOEXP_CS, 0x20
+#else
+# define MCP_ADDR 0x20
+#error nope
+#endif
 
 static pin_t col_pins[MATRIX_COLS] = MATRIX_COL_PINS;
 
@@ -15,18 +20,23 @@ static void init_pins(void) {
 }
 
 static void init_pins_MCP23018(void) {
-  mcp23018_set_config(I2C_ADDR, mcp23018_PORTA, ALL_INPUT);
-  mcp23018_set_config(I2C_ADDR, mcp23018_PORTB, ALL_INPUT);
-  mcp23018_set_output_all(I2C_ADDR, 0x00, 0x00);
+  mcp23018_set_config(MCP_ADDR, mcp23018_PORTA, ALL_INPUT);
+  mcp23018_set_config(MCP_ADDR, mcp23018_PORTB, ALL_INPUT);
+  mcp23018_set_output_all(MCP_ADDR, 0x00, 0x00);
 }
 
 void matrix_init_custom(void) {
+#ifdef IOEXP_INT
   setPinInputHigh(IOEXP_INT);
+#endif
+  setPinOutputPushPull(IOEXP_CS);
+  writePinHigh(IOEXP_CS);
   setPinOutputPushPull(IOEXP_RESET);
   writePinLow(IOEXP_RESET);
-  wait_ms(100);
+  wait_ms(1); /* spec is >= 1uS */
   writePinHigh(IOEXP_RESET);
-  mcp23018_init(I2C_ADDR);
+  wait_ms(1); /* spec is >= 1us */
+  mcp23018_init(MCP_ADDR);
 
   init_pins();
   init_pins_MCP23018();
@@ -38,7 +48,7 @@ bool matrix_scan_custom(matrix_row_t current_matrix[]) {
   for (uint8_t row = 0; row < 16; row++) {
     matrix_row_t last_row_value = current_matrix[row];
     matrix_row_t new_row_value = 0;
-    mcp23018_set_dir(I2C_ADDR, row < 8 ? mcp23018_PORTA : mcp23018_PORTB, ~(1 << (row&7)));
+    mcp23018_set_dir(MCP_ADDR, row < 8 ? mcp23018_PORTA : mcp23018_PORTB, ~(1 << (row&7)));
     // XXX: We could do this in a single cycle read, rather than this inefficient for-loop
     for (uint8_t col = 0; col < MATRIX_COLS; col++) {
       if (!readPin(col_pins[col])) {
@@ -50,7 +60,7 @@ bool matrix_scan_custom(matrix_row_t current_matrix[]) {
       current_matrix[row] = new_row_value;
     }
     if (row == 7 || row == 15) {
-      mcp23018_set_dir(I2C_ADDR, row < 8 ? mcp23018_PORTA : mcp23018_PORTB, ALL_INPUT);
+      mcp23018_set_dir(MCP_ADDR, row < 8 ? mcp23018_PORTA : mcp23018_PORTB, ALL_INPUT);
     }
   }
 
